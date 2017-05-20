@@ -7,5 +7,4 @@
     - In time, also cover download
 - "jump to" mode
 - Ban tracks from jump to window
-- Integration with media keys
 - Switch to gstdiscoverer for identifying tracks
