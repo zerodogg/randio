@@ -1,0 +1,40 @@
+<interface>
+    <menu id="app-menu">
+        <section>
+            <item>
+                <attribute name="label" translatable="yes">Preferences</attribute>
+                <attribute name="action">app.prefs</attribute>
+                <attribute name="accel">F3</attribute>
+            </item>
+        </section>
+        <section>
+            <item>
+                <attribute name="label" translatable="yes">Love track</attribute>
+                <attribute name="action">app.loveTrack</attribute>
+                <attribute name="accel">&lt;Control&gt;l</attribute>
+            </item>
+            <item>
+                <attribute name="label" translatable="yes">Next track</attribute>
+                <attribute name="action">app.nextTrack</attribute>
+                <attribute name="accel">&lt;Control&gt;n</attribute>
+            </item>
+        </section>
+        <section>
+            <item>
+                <attribute name="label" translatable="yes">Keyboard shortcuts</attribute>
+                <attribute name="action">win.show-help-overlay</attribute>
+            </item>
+            <item>
+                <attribute name="label" translatable="yes">About</attribute>
+                <attribute name="action">app.showAboutBox</attribute>
+            </item>
+        </section>
+        <section>
+            <item>
+                <attribute name="label" translatable="yes">_Quit</attribute>
+                <attribute name="action">app.quit</attribute>
+                <attribute name="accel">&lt;Primary&gt;Q</attribute>
+            </item>
+        </section>
+    </menu>
+</interface>

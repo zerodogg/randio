@@ -1,0 +1,342 @@
+<!--
+
+ Randio music player
+ Copyright (C) Eskild Hustvedt 2017
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<interface>
+    <!-- The main Window -->
+    <object class="GtkApplicationWindow" id="mainWindow">
+        <child type="titlebar">
+            <object class="GtkHeaderBar" id="headerbar">
+                <property name="visible">1</property>
+                <property name="title" translatable="true">Randio music player</property>
+                <property name="show-close-button">True</property>
+                <child>
+                    <object class="GtkButton" id="nextButton">
+                        <property name="visible">1</property>
+                        <property name="sensitive">0</property>
+                        <signal name="clicked" handler="nextTrack"/>
+                        <child>
+                            <object class="GtkBox">
+                                <property name="visible">1</property>
+                                <child>
+                                    <object class="GtkImage">
+                                        <property name="visible">1</property>
+                                        <property name="icon-name">media-skip-forward-symbolic</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                    <packing>
+                        <property name="pack-type">end</property>
+                    </packing>
+                </child>
+                <!-- The Play/Pause button. This has a GtkStack with the different labels and
+                     icons for the two states. The app logic toggles between them as needed -->
+                <child>
+                    <object class="GtkButton">
+                        <property name="visible">1</property>
+                        <signal name="clicked" handler="togglePlaying"/>
+                        <child>
+                            <object class="GtkStack" id="playPauseButton">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="transition-type">crossfade</property>
+                                <!-- The state when playback is paused -->
+                                <child>
+                                    <object class="GtkBox">
+                                        <property name="visible">1</property>
+                                        <child>
+                                            <object class="GtkImage">
+                                                <property name="visible">1</property>
+                                                <property name="icon-name">media-playback-start-symbolic</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="name">playButtonStateStopped</property>
+                                    </packing>
+                                </child>
+                                <!-- The state when playback is playing -->
+                                <child>
+                                    <object class="GtkBox">
+                                        <property name="visible">1</property>
+                                        <child>
+                                            <object class="GtkImage">
+                                                <property name="visible">1</property>
+                                                <property name="icon-name">media-playback-pause-symbolic</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                    <packing>
+                                        <property name="name">playButtonStatePlaying</property>
+                                    </packing>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                    <packing>
+                        <property name="pack-type">end</property>
+                    </packing>
+                </child>
+            </object>
+        </child>
+        <child>
+            <!-- This is the GtkBox that makes up the main parts of the UI -->
+            <object class="GtkBox" id="mainBox">
+                <property name="visible">1</property>
+                <property name="border-width">5</property>
+                <property name="orientation">vertical</property>
+                <child>
+                    <object class="GtkLabel" id="trackname">
+                        <property name="xalign">0</property>
+                        <property name="visible">1</property>
+                        <property name="label">(not playing)</property>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkLabel" id="albumname">
+                        <property name="xalign">0</property>
+                        <property name="visible">1</property>
+                        <property name="label"></property>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkLabel" id="timer">
+                        <property name="xalign">0</property>
+                        <property name="visible">1</property>
+                        <property name="label">00:00/00:00</property>
+                    </object>
+                </child>
+                <!-- This is the container for our main "action" buttons. Ban/Love/Next/Play -->
+                <child>
+                    <object class="GtkBox" id="buttonBox">
+                        <property name="orientation">horizontal</property>
+                        <property name="visible">1</property>
+                        <property name="spacing">5</property>
+                        <property name="margin-top">10</property>
+                        <!-- The Ban button -->
+                        <child>
+                            <object class="GtkButton" id="banButton">
+                                <property name="visible">1</property>
+                                <property name="sensitive">0</property>
+                                <signal name="clicked" handler="banTrack"/>
+                                <style>
+                                    <class name="destructive-action"/>
+                                </style>
+                                <child>
+                                    <object class="GtkBox">
+                                        <property name="visible">1</property>
+                                        <child>
+                                            <object class="GtkImage">
+                                                <property name="visible">1</property>
+                                                <property name="icon-name">edit-delete-symbolic</property>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkLabel">
+                                                <property name="visible">1</property>
+                                                <property name="label" translatable="true">_Ban</property>
+                                                <property name="use-underline">True</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                        <!-- The Love button -->
+                        <child>
+                            <object class="GtkButton" id="loveButton">
+                                <property name="visible">1</property>
+                                <property name="sensitive">0</property>
+                                <signal name="clicked" handler="loveTrack"/>
+                                <child>
+                                    <object class="GtkBox">
+                                        <property name="visible">1</property>
+                                        <child>
+                                            <object class="GtkImage">
+                                                <property name="visible">1</property>
+                                                <property name="icon-name">emblem-favorite-symbolic</property>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="GtkLabel">
+                                                <property name="visible">1</property>
+                                                <property name="label" translatable="true">_Love</property>
+                                                <property name="use-underline">True</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                        <!-- The "next" button -->
+                    </object>
+                </child>
+            </object>
+        </child>
+    </object>
+    <!-- The preferences window -->
+    <object class="GtkApplicationWindow" id="prefsWindow">
+        <property name="default-height">300</property>
+        <property name="default-width">600</property>
+        <!-- The prefsWindow should never actually be closed. So we use gtk's builtin
+             signal handler that will hide the window instead of destroying it -->
+        <signal name="delete-event" handler="gtk_widget_hide_on_delete" swapped="no"/>
+        <child type="titlebar">
+            <object class="GtkHeaderBar">
+                <property name="visible">1</property>
+                <property name="title" translatable="true">Randio preferences</property>
+                <property name="show-close-button">True</property>
+            </object>
+        </child>
+        <child>
+            <!-- This is the GtkBox that contains all of the components of the
+                 preferences window-->
+            <object class="GtkBox" id="prefsBox">
+                <property name="visible">1</property>
+                <property name="border-width">5</property>
+                <property name="orientation">vertical</property>
+                <child>
+                    <object class="GtkLabel" id="libraryHeader">
+                        <property name="xalign">0</property>
+                        <property name="visible">1</property>
+                        <property name="label" translatable="true">Library</property>
+                        <attributes>
+                            <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                        </attributes>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkBox" id="libraryBox">
+                        <property name="visible">1</property>
+                        <property name="border-width">5</property>
+                        <property name="orientation">horizontal</property>
+                        <property name="spacing">2</property>
+                        <child>
+                            <object class="GtkTreeView" id="libraryView">
+                                <property name="headers_visible">True</property>
+                                <property name="visible">1</property>
+                                <child>
+                                    <object class="GtkTreeViewColumn" id="directory-column">
+                                        <property name="visible">1</property>
+                                        <property name="title" translatable="true">Directory</property>
+                                        <child>
+                                            <object class="GtkCellRendererText" id="dirRenderer">
+                                                <property name="visible">1</property>
+                                            </object>
+                                            <attributes>
+                                                <attribute name="text">0</attribute>
+                                            </attributes>
+                                        </child>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkTreeViewColumn" id="scanning-column">
+                                        <property name="visible">1</property>
+                                        <child>
+                                            <object class="GtkCellRendererSpinner" id="scanStateRenderer">
+                                                <property name="active">0</property>
+                                                <property name="visible">1</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+                            </object>
+                            <packing>
+                                <property name="expand">yes</property>
+                                <property name="fill">yes</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <object class="GtkBox" id="libButtonsBox">
+                                <property name="visible">1</property>
+                                <property name="border-width">5</property>
+                                <property name="orientation">vertical</property>
+                                <property name="spacing">5</property>
+                                <child>
+                                    <object class="GtkButton" id="addButton">
+                                        <property name="visible">1</property>
+                                        <property name="sensitive">1</property>
+                                        <child>
+                                            <object class="GtkLabel">
+                                                <property name="visible">1</property>
+                                                <property name="label" translatable="true">_Add directory</property>
+                                                <property name="use-underline">True</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="GtkButton" id="removeButton">
+                                        <property name="visible">1</property>
+                                        <property name="sensitive">0</property>
+                                        <child>
+                                            <object class="GtkLabel">
+                                                <property name="visible">1</property>
+                                                <property name="label" translatable="true">_Remove directory</property>
+                                                <property name="use-underline">True</property>
+                                            </object>
+                                        </child>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                    <packing>
+                        <property name="expand">yes</property>
+                        <property name="fill">yes</property>
+                    </packing>
+                </child>
+                <child>
+                    <object class="GtkLabel" id="lastfmHeader">
+                        <property name="xalign">0</property>
+                        <property name="visible">1</property>
+                        <property name="label" translatable="true">Last.fm</property>
+                        <attributes>
+                            <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+                        </attributes>
+                    </object>
+                </child>
+                <child>
+                    <!-- This is filled in by the app -->
+                    <object class="GtkLabel" id="lastfmConnectionStatus">
+                        <property name="xalign">0</property>
+                        <property name="visible">1</property>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkBox">
+                        <property name="visible">1</property>
+                        <child>
+                            <object class="GtkButton" id="lastfmConnector">
+                                <property name="visible">1</property>
+                                <property name="sensitive">1</property>
+                                <child>
+                                    <object class="GtkLabel">
+                                        <property name="visible">1</property>
+                                    </object>
+                                </child>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </object>
+</interface>

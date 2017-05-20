@@ -1,0 +1,11 @@
+- Scrobbling at 50% of track length
+- Progressbar for displaying track progression
+- Playing loved
+- Viewing and removing files from loved and banned
+- "Stop after this track"
+- Cover display
+    - In time, also cover download
+- "jump to" mode
+- Ban tracks from jump to window
+- Integration with media keys
+- Switch to gstdiscoverer for identifying tracks

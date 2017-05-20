@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/zerodogg/randio">
+      <file preprocess="xml-stripblanks" compressed="true" alias="gtk/menus.ui">randio-menu.ui</file>
+      <file preprocess="xml-stripblanks" compressed="true" alias="gtk/help-overlay.ui">randio-help-shortcuts.ui</file>
+      <file preprocess="xml-stripblanks" compressed="true">randio.ui</file>
+  </gresource>
+</gresources>

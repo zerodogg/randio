@@ -1,0 +1,7 @@
+*~
+*.swp
+*.sqlite*
+randio
+*.o
+*.tar.*z*
+build
